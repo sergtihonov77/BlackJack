@@ -1,35 +1,29 @@
-﻿using BlackJack.Interfaces;
-using BlackJack.Models;
-using System;
+﻿using BlackJack.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlackJack
 {
     public class BlackJackGame
 
     {
-        public const int startCards = 2;
+        private const int _startCards = 2;
 
-        public IBlackJackPlayer Player { get; set; }
+        private const int _dealerStandLim = 18;
 
-        public IBlackJackPlayer Dealer { get; set; }
+        public Player Player { get; set; }
+
+        public Player Dealer { get; set; }
 
         public GameResult Result { get; set; }
 
-        public IBlackjackUI UserInterface { get; set; }
-
-        public int StandLim { get; set; }
+        public ConsoleBlackjackUI UserInterface { get; set; }
 
         public CardDeck MainDeck;
 
-        public BlackJackGame(int dealerStandLim)
+        public BlackJackGame()
         {
             Result = GameResult.Pending;
             UserInterface = new ConsoleBlackjackUI(this);
-            StandLim = dealerStandLim;
 
             MainDeck = new CardDeck();
             MainDeck.Deck = new Stack<Card>();
@@ -46,7 +40,7 @@ namespace BlackJack
 
         public void GetStartCards()
         {
-            for (int i = 0; i++ < startCards;)
+            for (int i = 0; i++ < _startCards;)
             {
                 Dealer.Hand.Deck.Push(MainDeck.Deck.Pop());
                 Player.Hand.Deck.Push(MainDeck.Deck.Pop());
@@ -62,16 +56,16 @@ namespace BlackJack
         }
 
         public void Stand()
-        {
-            if (Result == GameResult.Pending)
-            {
-                while (BlackJackHelper.CanDealerHit(Dealer.Hand, StandLim))
+        {          
+                while (BlackJackHelper.CanDealerHit(Dealer.Hand, _dealerStandLim))
                 {
-                    Dealer.Hand.Deck.Push(MainDeck.Deck.Pop());
+                    if (Result == GameResult.Pending)
+                    {
+                        Dealer.Hand.Deck.Push(MainDeck.Deck.Pop());
+                    }
                 }
 
                 Result = BlackJackHelper.Result(Player, Dealer);
-            }
         }
 
     }

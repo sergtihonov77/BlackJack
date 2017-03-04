@@ -46,11 +46,9 @@
     <Compile Include="BlackJackGame.cs" />
     <Compile Include="BlackJackHelper.cs" />
     <Compile Include="ConsoleBlackjackUI.cs" />
-    <Compile Include="Interfaces\IBlackJackPlayer.cs" />
-    <Compile Include="Interfaces\IBlackjackUI.cs" />
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\CardDeck.cs" />
-    <Compile Include="Models\Models.cs" />
+    <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

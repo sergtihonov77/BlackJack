@@ -1,51 +1,15 @@
-﻿using BlackJack.Interfaces;
-using BlackJack.Models;
+﻿using BlackJack.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlackJack
 {
     public static class BlackJackHelper
     {
-        public const int cardDeckSize = 52;
-        public const int acesValue = 11;
-
-        public static CardDeck FillDeck()
-        {
-            string[] names = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
-
-            string[] suits = { "♣", "♦", "♥", "♠" };
-
-            CardDeck d = new CardDeck();
-            d.Deck = new Stack<Card>(cardDeckSize);
-            int value;
-            foreach (string s in suits)
-            {
-                foreach (string n in names)
-                {
-                    value = Int32.TryParse(n, out value) ? value : n == "A" ? acesValue : 10;
-                    d.Deck.Push(FillCard(n, s, value));
-                }
-            }
-            return d;
-        }
-
-        static Card FillCard(string name, string suit, int value)
-        {
-            Card result = new Card();
-
-            if (name != string.Empty && suit != string.Empty && value != 0)
-            {
-
-                result.Name = name;
-                result.Suit = suit;
-                result.Value = value;
-            }
-            return result;
-        }
+        private const int _cardDeckSize = 52;
+        private const int _acesValue = 11;
+        private const int _jqkValue = 10;
 
         public static Stack<Card> ShoffledDeck()
         {
@@ -72,21 +36,21 @@ namespace BlackJack
             return deck.Value < 21;
         }
 
-        public static GameResult Result(IBlackJackPlayer player, IBlackJackPlayer dealer)
+        public static GameResult Result(Player player, Player dealer)
         {
             GameResult res = GameResult.Win;
 
             double playerVal = HandValue(player.Hand);
             double dealerVal = HandValue(dealer.Hand);
 
-            if (playerVal <= 21 && dealerVal <= 21 && playerVal != dealerVal)
+            if (playerVal <= 21 && dealerVal <= 21 )
             {
-                res = playerVal > dealerVal ? GameResult.Win : GameResult.Lose;
+                res = (playerVal > dealerVal) ? GameResult.Win : (playerVal == dealerVal) ? GameResult.Draw : GameResult.Lose;
             }
 
-            if (playerVal > 21 && dealerVal > 21 && playerVal != dealerVal)
+            if (playerVal > 21 && dealerVal > 21 )
             {
-                res = playerVal < dealerVal ? GameResult.Win : GameResult.Lose;
+                res = (playerVal < dealerVal) ? GameResult.Win : (playerVal == dealerVal) ? GameResult.Draw : GameResult.Lose;
             }
 
             if (playerVal > 21 && dealerVal <= 21)
@@ -98,12 +62,47 @@ namespace BlackJack
             {
                 res = GameResult.Win;
             }
-
-            if (playerVal == dealerVal)
-            {
-                res = GameResult.Draw;
-            }
+   
             return res;
         }
+
+        #region Helpers
+
+        private static CardDeck FillDeck()
+        {
+
+            CardDeck d = new CardDeck();
+            d.Deck = new Stack<Card>(_cardDeckSize);
+            int value;
+            string nam;
+
+            foreach (var suit in Enum.GetValues(typeof(CardSuit)))
+            {
+                foreach (var name in Enum.GetValues(typeof(CardName)))
+                {
+                    value = (int)name;
+                    nam = ((int)name > 10) ? name.ToString() : value.ToString();
+                    value = ((int)name == 14) ? _acesValue : ((int)name < 11) ? value : _jqkValue;
+                    d.Deck.Push(FillCard(nam, suit.ToString(), value));
+                }
+            }
+            return d;
+        }
+
+        private static Card FillCard(string name, string suit, int value)
+        {
+            Card result = new Card();
+
+            if (name != string.Empty && suit != string.Empty && value != 0)
+            {
+
+                result.Name = name;
+                result.Suit = suit;
+                result.Value = value;
+            }
+            return result;
+        }
+
+        #endregion Helpers
     }
 }

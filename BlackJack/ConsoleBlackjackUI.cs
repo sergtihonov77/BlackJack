@@ -1,13 +1,9 @@
 ﻿using BlackJack.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlackJack
 {
-        public class ConsoleBlackjackUI : IBlackjackUI
+    public class ConsoleBlackjackUI 
     {
         public BlackJackGame BlackJack { get; set; }
 
@@ -15,31 +11,11 @@ namespace BlackJack
         {
             BlackJack = game;
         }  
-           
-        private void Show(BlackJackGame bj)
-        {
-            Console.WriteLine("-----Diller-----");
-            foreach (Card c in bj.Dealer.Hand.Deck)
-            {
-                Console.WriteLine(string.Format("{0}{1}", c.Name, c.Suit));
-            }
-            Console.WriteLine("Total score: " + BlackJackHelper.HandValue(bj.Dealer.Hand));
-
-            Console.WriteLine(Environment.NewLine);
-
-            Console.WriteLine("-----Player-----");
-            foreach (Card c in bj.Player.Hand.Deck)
-            {
-                Console.WriteLine(string.Format("{0}{1}", c.Name, c.Suit));
-            }
-            Console.WriteLine("Total score: " + BlackJackHelper.HandValue(bj.Player.Hand));
-
-            Console.WriteLine(Environment.NewLine);
-        }
-
+             
         public void StartGame()
         {
             Show(BlackJack);
+            Console.Title = "BLACKJACK";
         }
 
         public void  Game()
@@ -47,6 +23,7 @@ namespace BlackJack
             string input = "";
             StartGame();
             Console.WriteLine("Take the next card - Press Y / y to stop - press any key!");
+            
             while (BlackJack.Result == GameResult.Pending)
             {
 
@@ -87,6 +64,54 @@ namespace BlackJack
             }
             
         }
+
+        #region Helpers
+
+        private void Show(BlackJackGame bj)
+        {
+            Console.WriteLine("-----Dealer-----");
+            foreach (Card c in bj.Dealer.Hand.Deck)
+            {
+                Console.WriteLine(string.Format("{0}{1}", c.Name, ShowSuit(c.Suit)));
+            }
+            Console.WriteLine("Total score: " + BlackJackHelper.HandValue(bj.Dealer.Hand));
+
+            Console.WriteLine(Environment.NewLine);
+
+            Console.WriteLine("-----Player-----");
+            foreach (Card c in bj.Player.Hand.Deck)
+            {
+                Console.WriteLine(string.Format("{0}{1}", c.Name, ShowSuit(c.Suit)));
+            }
+            Console.WriteLine("Total score: " + BlackJackHelper.HandValue(bj.Player.Hand));
+
+            Console.WriteLine(Environment.NewLine);
+        }
+
+        private string ShowSuit(string suit)
+        {
+            string res = "";
+            switch (suit)
+            {
+                case "Spades":
+                    res = "♠";
+                    break;
+                case "Hearts":
+                    res = "♥";
+                    break;
+                case "Diamonds":
+                    res = "♦";
+                    break;
+                case "Clubs":
+                    res = "♣";
+                    break;
+            }
+            return res;
+
+
+        }
+
+        #endregion Helpers
 
     }
 }
